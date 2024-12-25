@@ -1,0 +1,69 @@
+networks:
+  of-network:
+services:
+  of-mono: 
+    image: node:22
+    working_dir: /app
+    volumes:
+      - ".:/app"
+    command: tail -f /dev/null
+    container_name: of-mono
+    restart: always
+    ports:
+      - "3002:3002"
+      - "3003:3003"
+    networks:
+      - of-network
+    depends_on:
+      - of-redis
+      - of-kafka
+  of-redis:
+    image: redis:7.0
+    container_name: of-redis
+    ports:
+      - "6379:6379"
+    command: ["redis-server", "--appendonly", "yes"]
+    networks:
+      - of-network
+  of-zookeeper:
+    image: confluentinc/cp-zookeeper:7.4.0
+    container_name: of-zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - "2181:2181"
+    networks:
+      - of-network
+  of-kafka:
+    image: confluentinc/cp-kafka:7.4.0
+    container_name: of-kafka
+    depends_on:
+      - of-zookeeper
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: of-zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://of-kafka:9092
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+      KAFKA_NUM_PARTITIONS: 1
+    # volumes:
+    #   - ./kafka-data:/var/lib/kafka/data
+    ports:
+      - "9092:9092"
+    networks:
+      - of-network
+  of-kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    container_name: of-kafka-ui
+    depends_on:
+      - of-kafka
+    environment:
+      KAFKA_CLUSTERS_0_NAME: local
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: of-kafka:9092
+      KAFKA_CLUSTERS_0_ZOOKEEPER: of-zookeeper:2181
+    ports:
+      - "8080:8080"
+    networks:
+      - of-network

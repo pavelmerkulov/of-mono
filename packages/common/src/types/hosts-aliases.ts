@@ -1,0 +1,1 @@
+export type HostAliases = 'AUTOMATIONS_SERVICE' | 'CONNECTIONS_SERVICE';
