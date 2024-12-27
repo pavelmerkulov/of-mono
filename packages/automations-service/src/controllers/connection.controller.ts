@@ -8,6 +8,7 @@ import { UpdateConnectionUseCase } from '../use-cases/update-connection.use-case
 import { ConnectionCreatedEC, Payload as ConnectionCreatedECPayload } from "@of-mono/common/src/contracts/automations-service/event-contracts/connection-created.EC";
 import { SendNotifEmailsJC, Payload as SendNotifEmailsJCPayload } from "@of-mono/common/src/contracts/automations-service/job-contracts/send-notif-emails.JC";
 import { Job } from '@of-mono/common/src/lib/contract-util/decorators/job';
+import { IntegrationApp } from '@of-mono/common/src/types/intergration-app';
 
 @Controller
 export class ConnectionController {
@@ -58,8 +59,8 @@ export class ConnectionController {
 		// making http request to some service
 		this.broker.sendRequest(UpdateConnectionRC, {
 			connectionId: '444444',
-			sourceApp: 'google',
-			destinationApp: 'mailchimp'
+			sourceApp: IntegrationApp.google,
+			destinationApp: IntegrationApp.mailchimp
 		})	
 	}
 }

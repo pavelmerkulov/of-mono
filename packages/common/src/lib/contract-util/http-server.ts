@@ -15,19 +15,24 @@ export class HttpServer {
 					try {
 						let body = { ...req.body, ...req.params};
 
-						if (contract.manifest.requestPayloadSchema) {
-							const { error, value } = contract.manifest.requestPayloadSchema.validate(body);
+						
+						// @todo
+						// we switched to class-validator from Joi
+						// we need to add validation here
 
-							if (error) {
-								res.status(422).json({
-									error: 'validationError',
-									message: `Validation failed: ${error.details.map((d: any) => d.message).join(', ')}`
-								})
-								return;
-							} 
+						// if (contract.manifest.requestPayloadSchema) {
+						// 	const { error, value } = contract.manifest.requestPayloadSchema.validate(body);
 
-							body = value;
-						} 
+						// 	if (error) {
+						// 		res.status(422).json({
+						// 			error: 'validationError',
+						// 			message: `Validation failed: ${error.details.map((d: any) => d.message).join(', ')}`
+						// 		})
+						// 		return;
+						// 	} 
+
+						// 	body = value;
+						// } 
 
 
 						const resPyaload = await callMeta.target[callMeta.methodName](body, req.params);

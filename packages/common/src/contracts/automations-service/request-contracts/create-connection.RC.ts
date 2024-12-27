@@ -1,12 +1,17 @@
 import { RequestContract } from "../../../lib/contract-util/contracts/request-contract";
-import Joi from 'joi'
+import { IsEnum, IsString } from "class-validator";
+import { IntegrationApp } from "../../../types/intergration-app";
 
 export class RequestPayload {
-	sourceApp: 'pipedrive' | 'google' = 'pipedrive'; 
-	destinationApp: 'mailchimp' | 'activecamp' = 'mailchimp';
+	@IsEnum(IntegrationApp)
+	sourceApp: IntegrationApp = IntegrationApp.unknown; 
+	
+	@IsEnum(IntegrationApp)
+	destinationApp: IntegrationApp = IntegrationApp.unknown; ;
 }
 
 export class ResponsePayload {
+	@IsString()
 	id: string = ''; 
 }
 
@@ -14,15 +19,6 @@ export const CreateConnectionRC = new RequestContract({
 	url: '/connections',
 	method: 'POST',
 	hostAlias: 'AUTOMATIONS_SERVICE',
-	
 	requestPayload: new RequestPayload(),
-	requestPayloadSchema: Joi.object({
-		sourceApp: Joi.valid('pipedrive', 'google'),
-		destinationApp: Joi.valid('mailchimp', 'activecamp'),
-	}),
-	
 	responsePayload: new ResponsePayload(),
-	responsePayloadSchema: Joi.object({
-		id: Joi.string(),
-	})
 });

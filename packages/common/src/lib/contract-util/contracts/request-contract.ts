@@ -6,9 +6,7 @@ interface Manifest<RequestPayload, ResponsePayload, UrlParams> {
 	method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
 	hostAlias: HostAliases;
 	requestPayload?: RequestPayload;
-	requestPayloadSchema?: any;
 	responsePayload?: ResponsePayload;
-	responsePayloadSchema?: any;
 	urlParams?: UrlParams
 }
 

@@ -2,7 +2,6 @@ interface Manifest<Payload> {
 	queue: string;
 	name: string;
 	payload?: Payload;
-	payloadSchema?: any;
 }
 
 export class JobContract<Payload> {
