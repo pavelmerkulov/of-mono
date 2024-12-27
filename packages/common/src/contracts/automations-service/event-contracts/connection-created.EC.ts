@@ -3,19 +3,15 @@ import Joi from 'joi'
 
 export class Payload {
 	id: string = ''; 
-	getSchemaValidation?: () => Joi.ObjectSchema;
-	
-	constructor() {
-		this.getSchemaValidation = () => {	
-			return Joi.object({
-				id: Joi.string(),
-			});
-		}
-	}
 }
 
 export const ConnectionCreatedEC = new EventContract({
 	topic: 'connection',
     type: 'ConnectionCreated',
-    payload: new Payload()
+    payload: new Payload(),
+	payloadSchema: {	
+		return Joi.object({
+			id: Joi.string(),
+		});
+	}
 });

@@ -1,7 +1,8 @@
 interface Manifest<Payload> {
 	topic: string;
 	type: string;
-	payload?: Payload
+	payload?: Payload;
+	payloadSchema?: any;
 }
 
 export class EventContract<Payload> {
