@@ -9,9 +9,7 @@ export const ConnectionCreatedEC = new EventContract({
 	topic: 'connection',
     type: 'ConnectionCreated',
     payload: new Payload(),
-	payloadSchema: {	
-		return Joi.object({
-			id: Joi.string(),
-		});
-	}
+	payloadSchema: Joi.object({
+		id: Joi.string(),
+	})
 });
