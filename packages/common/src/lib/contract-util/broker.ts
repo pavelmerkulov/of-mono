@@ -67,7 +67,7 @@ export class Broker {
 
 	async sendEvent<T extends EventContract<any>>(
 		contract: T,
-		payload: T['manifest']['payload']
+		payload: InstanceType<T['manifest']['payload']>
 	) {
 		const { topic, type } =  contract.manifest;
 
@@ -90,7 +90,7 @@ export class Broker {
 
 	addJob<T extends JobContract<any>>(
 		contract: T,
-		payload: T['manifest']['payload'],
+		payload: InstanceType<T['manifest']['payload']>,
 		opts?: JobsOptions
 	) {
 		const { queue, name } =  contract.manifest;
@@ -103,8 +103,8 @@ export class Broker {
 
 	async sendRequest<T extends RequestContract<any, any, any>>(
 		contract: T, 
-		reqPayload?: T['manifest']['requestPayload'], 
-		params?: T['manifest']['urlParams']): Promise<T['manifest']['responsePayload']> 
+		reqPayload?: InstanceType<T['manifest']['requestPayload']>, 
+		params?: InstanceType<T['manifest']['urlParams']>): Promise<InstanceType<T['manifest']['responsePayload']>> 
 	{
 		//
 		if (!this.hostMap.has(contract.manifest.hostAlias)) {

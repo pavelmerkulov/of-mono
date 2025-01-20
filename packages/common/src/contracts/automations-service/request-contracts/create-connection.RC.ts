@@ -1,6 +1,7 @@
 import { RequestContract } from "../../../lib/contract-util/contracts/request-contract";
 import { IsEnum, IsString } from "class-validator";
 import { IntegrationApp } from "../../../types/intergration-app";
+import { EmptyClass } from "../../../lib/contract-util/contracts/empty-class";
 
 export class RequestPayload {
 	@IsEnum(IntegrationApp)
@@ -19,6 +20,7 @@ export const CreateConnectionRC = new RequestContract({
 	url: '/connections',
 	method: 'POST',
 	hostAlias: 'AUTOMATIONS_SERVICE',
-	requestPayload: new RequestPayload(),
-	responsePayload: new ResponsePayload(),
+	requestPayload: RequestPayload,
+	responsePayload: ResponsePayload,
+	urlParams: EmptyClass
 });

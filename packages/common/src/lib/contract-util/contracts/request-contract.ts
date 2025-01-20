@@ -5,9 +5,9 @@ interface Manifest<RequestPayload, ResponsePayload, UrlParams> {
 	url: string;
 	method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
 	hostAlias: HostAliases;
-	requestPayload?: RequestPayload;
-	responsePayload?: ResponsePayload;
-	urlParams?: UrlParams
+	requestPayload: new() => RequestPayload;
+	responsePayload: new() => ResponsePayload;
+	urlParams: new() => UrlParams;
 }
 
 export class RequestContract<RequestPayload, ResponsePayload, UrlParams> {

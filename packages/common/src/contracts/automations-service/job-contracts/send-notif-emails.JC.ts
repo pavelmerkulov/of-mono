@@ -1,4 +1,4 @@
-import { JobContract } from "../../../lib/contract-util/contracts/job-contract";
+import { JobContract, Void } from "../../../lib/contract-util/contracts/job-contract";
 import { IsEmail, IsString } from "class-validator";
 
 export class Payload {
@@ -12,5 +12,5 @@ export class Payload {
 export const SendNotifEmailsJC = new JobContract({
 	queue: 'email-queue',
 	name: 'send-notif-emails',
-    payload: new Payload(),
+    payload: Payload,
 });

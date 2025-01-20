@@ -1,7 +1,9 @@
+export class Void {};
+
 interface Manifest<Payload> {
 	queue: string;
 	name: string;
-	payload?: Payload;
+	payload: new () => Payload;
 }
 
 export class JobContract<Payload> {
