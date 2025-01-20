@@ -1,91 +1,30 @@
 // import axios from 'axios';
 import 'reflect-metadata';
 import { RequestContract } from "./contracts/request-contract";
-import * as path from 'path';
-import { glob } from 'glob';
 import { EventContract } from './contracts/event-contract';
-import { Kafka, Producer as KafkaProducer } from 'kafkajs';
 import { JobContract } from './contracts/job-contract';
-import { JobsOptions, Queue } from 'bullmq';
-import { HostAliases } from '../../types/hosts-aliases';
-import axios from 'axios'
+import { JobsOptions } from 'bullmq';
+import { RequestSender } from './request-sender';
+import { EventSender } from './event-sender';
+import { JobSender } from './job-sender';
 
-function replaceParams(url: string, params: Record<string, string>): string {
-	return Object.keys(params).reduce(
-		(updatedUrl, key) => updatedUrl.replace(`:${key}`, params[key]),
-		url
-	);
-}
 
 export class Broker {
-	private kafkaProducer!: KafkaProducer;
-	private bullQueueMap: { [name: string]: Queue } = {};
-	public redisConnection!: {
-		host: string,
-		port: number
-	};
-	private hostMap: Map<HostAliases, { url: string }> = new Map();
+	public requestSender!: RequestSender;
+	public eventSender!: EventSender;
+	public jobSender!: JobSender<any>;
 
-	constructor(
-		public app: any,
-		public kafka: Kafka,		
-	) {}
-
-	private async createControllers(dir: string) {
-		const files: any = glob.sync(`${dir}/**/*.ts`, {});
-		for (const file of files) {
-			const modulePath = path.resolve(file);
-			const module = await import(modulePath);
-
-			for (const key in module) {
-				const exported = module[key];
-				if (typeof exported === 'function' && Reflect.getMetadata('isController', exported)) {
-					exported.prototype.broker = this;
-					new exported();
-				}
-			}
-		}
-	}
-
-	public async init(params: {
-		controllersDir: string
-		redisConnection: {
-			host: string,
-			port: number
-		}
-		hosts: Array<{
-			alias: HostAliases,
-			url: string
-		}>;
-	}) {
-		await this.createControllers(params.controllersDir);
-		this.redisConnection = params.redisConnection;
-		params.hosts.forEach(h => {
-			this.hostMap.set(h.alias, { url: h.url });
-		})
-	}
+	constructor(private config: BrokerConfig) {}
 
 	async sendEvent<T extends EventContract<any>>(
 		contract: T,
 		payload: InstanceType<T['manifest']['payload']>
 	) {
-		const { topic, type } =  contract.manifest;
-
-		if (!this.kafkaProducer) {
-			this.kafkaProducer = this.kafka.producer();
-			await this.kafkaProducer.connect();
+		if (!this.eventSender) {
+			throw new Error('Event sender is not set');
 		}
 
-		await this.kafkaProducer.send({
-			topic,
-			messages: [
-				{ 
-					value: JSON.stringify({
-						topic, type, payload
-					})
-				}
-			]
-		})
+		return this.eventSender.sendEvent(contract, payload);
 	}
 
 	addJob<T extends JobContract<any>>(
@@ -93,12 +32,11 @@ export class Broker {
 		payload: InstanceType<T['manifest']['payload']>,
 		opts?: JobsOptions
 	) {
-		const { queue, name } =  contract.manifest;
-		if (!this.bullQueueMap[queue]) {
-			this.bullQueueMap[queue] = new Queue(queue, { connection: this.redisConnection });
+		if (!this.jobSender) {
+			throw new Error('Event sender is not set');
 		}
 
-		this.bullQueueMap[queue].add(name, JSON.stringify(payload), opts);
+		return this.jobSender.addJob(contract, payload, opts);
 	}
 
 	async sendRequest<T extends RequestContract<any, any, any>>(
@@ -106,27 +44,10 @@ export class Broker {
 		reqPayload?: InstanceType<T['manifest']['requestPayload']>, 
 		params?: InstanceType<T['manifest']['urlParams']>): Promise<InstanceType<T['manifest']['responsePayload']>> 
 	{
-		//
-		if (!this.hostMap.has(contract.manifest.hostAlias)) {
-			throw new Error(`Host alias "${contract.manifest.hostAlias}" is not found`);
-		}
-		let url = `${this.hostMap.get(contract.manifest.hostAlias)?.url}${contract['manifest']['url']}`
-		if (params) {
-			url = replaceParams(url, params);
-		}
-		if (reqPayload) {
-			url = replaceParams(url, reqPayload);
+		if (!this.requestSender) {
+			throw new Error('Request sender is not set');
 		}
 		
-		//
-		const method: string = contract['manifest']['method'];
-		const response = await axios.request({
-			url,
-			method,
-			data: reqPayload,
-		});
-
-		// @todo additional checks, validation etc
-		return response.data;
+		return this.requestSender.sendRequest(contract, reqPayload, params);
 	}
 }

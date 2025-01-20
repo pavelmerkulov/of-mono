@@ -1,14 +1,14 @@
 export class Void {};
 
-interface Manifest<Payload> {
+interface Manifest<TPayload> {
 	queue: string;
 	name: string;
-	payload: new () => Payload;
+	payload: new () => TPayload;
 }
 
-export class JobContract<Payload> {
+export class JobContract<TPayload> {
 	constructor(
-		public readonly manifest: Manifest<Payload>
+		public readonly manifest: Manifest<TPayload>
 	){
 		Object.freeze(this);
 	}

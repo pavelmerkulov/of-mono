@@ -1,18 +1,18 @@
 import { HostAliases } from "../../../types/hosts-aliases";
 
 
-interface Manifest<RequestPayload, ResponsePayload, UrlParams> {
+interface Manifest<TRequestPayload, TResponsePayload, TUrlParams> {
 	url: string;
 	method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
 	hostAlias: HostAliases;
-	requestPayload: new() => RequestPayload;
-	responsePayload: new() => ResponsePayload;
-	urlParams: new() => UrlParams;
+	requestPayload: new() => TRequestPayload;
+	responsePayload: new() => TResponsePayload;
+	urlParams: new() => TUrlParams;
 }
 
-export class RequestContract<RequestPayload, ResponsePayload, UrlParams> {
+export class RequestContract<TRequestPayload, TResponsePayload, TUrlParams> {
 	constructor(
-		public readonly manifest: Manifest<RequestPayload, ResponsePayload, UrlParams>
+		public readonly manifest: Manifest<TRequestPayload, TResponsePayload, TUrlParams>
 	){
 		Object.freeze(this);
 	}
