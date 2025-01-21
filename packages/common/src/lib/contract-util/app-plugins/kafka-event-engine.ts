@@ -16,7 +16,8 @@ export class KafkaEventEngine implements AppPlugin, EventSender {
 			ssl: boolean,
 			sasl: any,
 			connectionTimeout: number
-		}
+		},
+		errorHandler?: (err: Error) => void 
 	}) {
 		this.kafka = new Kafka(config.kafkaConnection)
 	}
@@ -49,9 +50,17 @@ export class KafkaEventEngine implements AppPlugin, EventSender {
 			await consumer.run({
 				eachMessage: async ({ topic, message }: any) => {
 					if (map[groupId][topic]) {
-						const { contract, callMeta } =  map[groupId][topic];
-						const { payload } = JSON.parse(message.value.toString());
-						await callMeta.target[callMeta.methodName](payload);
+						try {
+							const { contract, callMeta } =  map[groupId][topic];
+							const { payload } = JSON.parse(message.value.toString());
+							await callMeta.target[callMeta.methodName](payload);
+						} catch (error) {
+							const err: any = error;
+							if (this.config.errorHandler) {
+								this.config.errorHandler(err);
+							}							
+							throw err;
+						}
 					}
 				},
 			});

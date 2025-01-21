@@ -25,7 +25,8 @@ export class HttpEngine implements AppPlugin, RequestSender {
 			port: number,
 			hosts: Array<{ alias: string, url: string }>,
 			validateInputRequest: boolean,
-			validateOutputRequestResponse: boolean
+			validateOutputRequestResponse: boolean,
+			errorHandler?: (err: Error) => void 
 		}
 	) {
 		config.hosts.forEach(h => {
@@ -69,6 +70,10 @@ export class HttpEngine implements AppPlugin, RequestSender {
 							error: err.message ?? err.name,
 							data: err.info
 						})
+
+						if (this.config.errorHandler) {
+							this.config.errorHandler(err);
+						}
 					}
 				}
 			);

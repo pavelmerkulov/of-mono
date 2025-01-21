@@ -5,6 +5,8 @@ import { KafkaEventEngine } from '@of-mono/common/src/lib/contract-util/app-plug
 import { BullJobEngine } from '@of-mono/common/src/lib/contract-util/app-plugins/bull-job-engine';
 import { Container as DiContainer } from 'typedi';
 import { Broker } from '@of-mono/common/src/lib/contract-util/broker';
+import { logger } from '@of-mono/common/src/lib/logger';
+import { BaseError } from '@of-mono/common/src/lib/base.error';
 
 // we can configure our express app as we want
 const expressApp = express();
@@ -17,6 +19,17 @@ const app = new Application({
     controllersDir: `${__dirname}/controllers`,
 }) 
 
+
+// @todo just example
+const errorHandler = (err: BaseError) => {
+    logger.info({
+        error: err.name,
+        message: err.message,
+        info: err.info,
+		stack: err.stack
+    })
+}
+
 // allow working with HTTP - handling and sending requests
 app.usePlugin(new HttpEngine(
     expressApp,
@@ -27,7 +40,8 @@ app.usePlugin(new HttpEngine(
             { alias: 'CONTACTS_SERVICE', url: 'http://localhost:3003' },
         ],
         validateInputRequest: true,
-        validateOutputRequestResponse: true
+        validateOutputRequestResponse: true,
+        errorHandler
     }
 ))
 
@@ -39,7 +53,8 @@ app.usePlugin(new KafkaEventEngine({
         ssl: false,
         sasl: null,
         connectionTimeout: 30000,
-    }
+    },
+    errorHandler
 }))
 
 // allow working with Bull - adding and handling job
@@ -47,7 +62,8 @@ app.usePlugin(new BullJobEngine({
     redisConnection: {
         host: 'of-redis',
         port: 6379,             
-    }
+    },
+    errorHandler
 }))
 
 // we want inject broker to use cases

@@ -13,7 +13,8 @@ export class BullJobEngine implements AppPlugin, JobSender<JobsOptions> {
 		redisConnection: {
 			host: string,
 			port: number
-		}
+		},
+		errorHandler?: (err: Error) => void
 	}) {}
 
 	async init() {
@@ -35,9 +36,17 @@ export class BullJobEngine implements AppPlugin, JobSender<JobsOptions> {
 		for (const queue in map) {
 			new Worker(queue, async (job: Job) => {
 				if (map[queue][job.name]) {
-					const { contract, callMeta } = map[queue][job.name];
-					const payload = JSON.parse(job.data.toString());
-					await callMeta.target[callMeta.methodName](payload);
+					try {
+						const { contract, callMeta } = map[queue][job.name];
+						const payload = JSON.parse(job.data.toString());
+						await callMeta.target[callMeta.methodName](payload);
+					} catch (error) {
+						const err: any = error;
+						if (this.config.errorHandler) {
+							this.config.errorHandler(err);
+						}							
+						throw err;
+					}
 				}
 			}, { connection: this.config.redisConnection })
 		}
