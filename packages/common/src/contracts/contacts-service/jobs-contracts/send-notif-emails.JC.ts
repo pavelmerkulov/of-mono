@@ -1,10 +1,8 @@
-import { JobContract, Void } from "../../../lib/contract-util/contracts/job-contract";
-import { IsEmail, IsString } from "class-validator";
+import { JobContract } from "../../../lib/contract-util/contracts/job-contract";
+import { IsDefined, IsEmail } from "class-validator";
 
 export class Payload {
-	@IsString()
-	id: string = ''; 
-	
+	@IsDefined()
 	@IsEmail()
 	email: string = '';
 }

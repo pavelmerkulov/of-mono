@@ -59,8 +59,6 @@ export class Application {
 		if (typeof pl['addJob'] === 'function') {
 			this.broker.jobSender = plugin as unknown as JobSender<any>;
 		}
-
-		return plugin.init();
 	}
 	
 	constructor(private config: AppConfig) {

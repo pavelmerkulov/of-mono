@@ -126,10 +126,30 @@ During the code-writing (and compilation) stage, all necessary checks for data c
 
 
 ### Some commands
+
+- Launching services
 ```
 npm run dev --workspace=@of-mono/automations-service
+```
+```
+npm run dev --workspace=@of-mono/contacts-service
+```
 
-curl -X POST http://localhost:3003/connections -H "Content-Type: application/json" -d '{"sourceApp":"pipedrive","destinationApp":"mailchimp"}'
+- Creating a New Connection
+  - A new connection will be created.
+  - The ConnectionCreated event will be emitted.
 
-curl -X PUT http://localhost:3003/connections/777 -H "Content-Type: application/json" -d '{"sourceApp":"pipedrive","destinationApp":"mailchimp"}'
+```
+curl -i -X POST http://localhost:3002/connections -H "Content-Type: application/json" -d '{"sourceApp":"pipedrive","destinationApp":"mailchimp"}'
+```
+
+- Creating a New Contact for the Connection
+  - The Automation Service will call the Contacts Service.
+  - A contact will be created in the Contacts Service.
+  - The ContactCreated event will be emitted by the Contacts Service.
+  - The ContactCreated event will be handled by the Contacts Service, which will add the SendNotifyEmail job to the queue.
+  - The Contacts Service will process the SendNotifyEmail job, resulting in the email being sent.
+
+```
+curl -i -X POST http://localhost:3002/connections/111/contacts -H "Content-Type: application/json" -d '{"email":"test@local.ee", "firstName": "Bill", "lastName": "Gates"}'
 ```

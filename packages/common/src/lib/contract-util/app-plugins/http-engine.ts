@@ -22,7 +22,7 @@ export class HttpEngine implements AppPlugin, RequestSender {
 		private config: {
 			port: number,
 			hosts: Array<{ alias: string, url: string }>,
-			validationInputRequest: boolean,
+			validateInputRequest: boolean,
 			validateOutputRequestResponse: boolean
 		}
 	) {
@@ -36,13 +36,14 @@ export class HttpEngine implements AppPlugin, RequestSender {
 
 		for (const [ contract, callMeta ] of handlers) {
 			const { url, method } = contract.manifest;
+
 			this.expressApp[method.toLowerCase()](
 				url,
 				async (req: Request, res: Response) => {
 					try {
 						let body = { ...req.body, ...req.params};
 
-						if (this.config.validationInputRequest) {
+						if (this.config.validateInputRequest) {
 							await validateObject(body, contract.manifest.requestPayload, {});
 						}
 

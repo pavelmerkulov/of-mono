@@ -21,12 +21,12 @@ const app = new Application({
 app.usePlugin(new HttpEngine(
     expressApp,
     {
-        port: 3003,
+        port: 3002,
         hosts: [
-            { alias: 'AUTOMATIONS_SERVICE', url: 'http://localhost:3003' },
-            { alias: 'CLIENTS_SERVICE', url: 'http://localhost:3004' },
+            { alias: 'AUTOMATIONS_SERVICE', url: 'http://localhost:3002' },
+            { alias: 'CONTACTS_SERVICE', url: 'http://localhost:3003' },
         ],
-        validationInputRequest: true,
+        validateInputRequest: true,
         validateOutputRequestResponse: true
     }
 ))

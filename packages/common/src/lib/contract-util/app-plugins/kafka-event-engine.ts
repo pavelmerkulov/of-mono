@@ -50,7 +50,7 @@ export class KafkaEventEngine implements AppPlugin, EventSender {
 				eachMessage: async ({ topic, message }: any) => {
 					if (map[groupId][topic]) {
 						const { contract, callMeta } =  map[groupId][topic];
-						const payload = JSON.parse(message.value.toString());
+						const { payload } = JSON.parse(message.value.toString());
 						await callMeta.target[callMeta.methodName](payload);
 					}
 				},
@@ -78,7 +78,7 @@ export class KafkaEventEngine implements AppPlugin, EventSender {
 			messages: [
 				{ 
 					value: JSON.stringify({
-						topic, type, payload
+						type, payload
 					})
 				}
 			]
