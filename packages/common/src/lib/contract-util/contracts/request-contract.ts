@@ -2,6 +2,7 @@ import { HostAliases } from "../../../types/hosts-aliases";
 
 
 interface Manifest<TRequestPayload, TResponsePayload, TUrlParams> {
+	name: string;
 	url: string;
 	method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
 	hostAlias: HostAliases;

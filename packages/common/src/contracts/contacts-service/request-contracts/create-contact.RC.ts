@@ -21,11 +21,13 @@ export class RequestPayload {
 }
 
 export class ResponsePayload {
-	@IsString()
+	@IsDefined()
+	@IsNotEmpty()
 	id: string = ''; 
 }
 
 export const CreateContactRC = new RequestContract({
+	name: 'CreateContactRC',
 	url: '/contacts',
 	method: 'POST',
 	hostAlias: 'CONTACTS_SERVICE',

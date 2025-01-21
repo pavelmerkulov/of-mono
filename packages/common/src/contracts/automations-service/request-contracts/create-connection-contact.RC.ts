@@ -26,6 +26,7 @@ export class ResponsePayload {
 }
 
 export const CreateConnectionContactRC = new RequestContract({
+	name: 'CreateConnectionContactRC',
 	url: '/connections/:connectionId/contacts',
 	method: 'POST',
 	hostAlias: 'AUTOMATIONS_SERVICE',

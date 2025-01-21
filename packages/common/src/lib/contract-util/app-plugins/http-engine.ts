@@ -5,6 +5,8 @@ import { RequestSender } from '../request-sender';
 import { RequestContract } from '../contracts/request-contract';
 import axios from 'axios';
 import { validateObject } from '../../validation/validate-object';
+import { ValidationError } from '../../validation/validation.error';
+import { NotValidRequestResponseError } from '../../../errors/not-valid-request-response.error';
 
 function replaceParams(url: string, params: Record<string, string>): string {
 	return Object.keys(params).reduce(
@@ -99,9 +101,19 @@ export class HttpEngine implements AppPlugin, RequestSender {
 			data: reqPayload,
 		});
 
-		// @todo additional checks, validation etc
 		if (this.config.validateOutputRequestResponse) {
-			await validateObject(response.data, contract.manifest.responsePayload, {});
+			try {
+				await validateObject(response.data.data, contract.manifest.responsePayload, {});
+			} catch (err) {
+				if (err instanceof ValidationError) {
+					throw new NotValidRequestResponseError(undefined, {
+						contract,
+						responseData: response.data.data
+					})
+				} else {
+					throw err;
+				}
+			}
 		}
 
 		return response.data;

@@ -17,6 +17,7 @@ export class ResponsePayload {
 }
 
 export const CreateConnectionRC = new RequestContract({
+	name: 'CreateConnectionRC',
 	url: '/connections',
 	method: 'POST',
 	hostAlias: 'AUTOMATIONS_SERVICE',
