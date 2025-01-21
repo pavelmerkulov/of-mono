@@ -7,19 +7,16 @@ import { ConnectionCreatedEC, Payload as ConnectionCreatedECPayload } from "@of-
 import { SendNotifEmailsJC, Payload as SendNotifEmailsJCPayload } from "@of-mono/common/src/contracts/automations-service/job-contracts/send-notif-emails.JC";
 import { Job } from '@of-mono/common/src/lib/contract-util/decorators/job';
 import { IntegrationApp } from '@of-mono/common/src/types/intergration-app';
+import { Container as DiContainer } from 'typedi';
+import { CreateConnectionUseCase } from '../use-cases/create-connection.use-case';
 
 @Controller
 export class ConnectionController {
-	declare broker: Broker;
-
+	
 	@Request(CreateConnectionRC)
 	async createConnection(reqPayload: CreateRequestPayload): Promise<CreateResponsePayload> {
-		// send event to kafka
-        //await this.broker.sendEvent(ConnectionCreatedEC, { id: '777' })
-
-		return {
-			id: '777'
-		}
+		const useCase = DiContainer.get(CreateConnectionUseCase);
+		return useCase.execute(reqPayload);
 	}
 
 	// @Request(UpdateConnectionRC)

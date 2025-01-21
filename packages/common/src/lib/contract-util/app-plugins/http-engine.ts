@@ -3,7 +3,8 @@ import { Request, Response } from 'express';
 import { AppPlugin } from '../app-plugin';
 import { RequestSender } from '../request-sender';
 import { RequestContract } from '../contracts/request-contract';
-import axios from 'axios'
+import axios from 'axios';
+import { validateObject } from '../../validation/validate-object';
 
 function replaceParams(url: string, params: Record<string, string>): string {
 	return Object.keys(params).reduce(
@@ -12,6 +13,7 @@ function replaceParams(url: string, params: Record<string, string>): string {
 	);
 }
 
+
 export class HttpEngine implements AppPlugin, RequestSender {
 	private hostMap: Map<string, { url: string }> = new Map();
 	
@@ -19,7 +21,9 @@ export class HttpEngine implements AppPlugin, RequestSender {
 		private expressApp: any,
 		private config: {
 			port: number,
-			hosts: Array<{ alias: string, url: string }>;
+			hosts: Array<{ alias: string, url: string }>,
+			validationInputRequest: boolean,
+			validateOutputRequestResponse: boolean
 		}
 	) {
 		config.hosts.forEach(h => {
@@ -29,6 +33,7 @@ export class HttpEngine implements AppPlugin, RequestSender {
 	
 	async init() {
 		const handlers = HandlerRegistry.getRequestHandlers();
+
 		for (const [ contract, callMeta ] of handlers) {
 			const { url, method } = contract.manifest;
 			this.expressApp[method.toLowerCase()](
@@ -37,33 +42,30 @@ export class HttpEngine implements AppPlugin, RequestSender {
 					try {
 						let body = { ...req.body, ...req.params};
 
-						
-						// @todo
-						// we switched to class-validator from Joi
-						// we need to add validation here
-
-						// if (contract.manifest.requestPayloadSchema) {
-						// 	const { error, value } = contract.manifest.requestPayloadSchema.validate(body);
-
-						// 	if (error) {
-						// 		res.status(422).json({
-						// 			error: 'validationError',
-						// 			message: `Validation failed: ${error.details.map((d: any) => d.message).join(', ')}`
-						// 		})
-						// 		return;
-						// 	} 
-
-						// 	body = value;
-						// } 
-
+						if (this.config.validationInputRequest) {
+							await validateObject(body, contract.manifest.requestPayload, {});
+						}
 
 						const resPyaload = await callMeta.target[callMeta.methodName](body, req.params);
 						res.json({
-							payload: resPyaload,
-							status: 'success'
+							data: resPyaload,
+							status: 200,
+							success: true
 						});
-					} catch (err) {
-						res.status(400).json({ error: (err as Error).message });
+					} catch (error) {
+						const err: any = error;
+
+						let statusCode = 400;
+						if (err.statusCode !== undefined) {
+							statusCode = err.statusCode;
+						}
+
+						res.status(statusCode).json({
+							success: false,
+							status: statusCode,
+							error: err.message ?? err.name,
+							data: err.info
+						})
 					}
 				}
 			);
@@ -97,6 +99,10 @@ export class HttpEngine implements AppPlugin, RequestSender {
 		});
 
 		// @todo additional checks, validation etc
+		if (this.config.validateOutputRequestResponse) {
+			await validateObject(response.data, contract.manifest.responsePayload, {});
+		}
+
 		return response.data;
 	}
 }

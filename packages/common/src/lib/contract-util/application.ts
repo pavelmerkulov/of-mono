@@ -6,11 +6,13 @@ import { JobSender } from "./job-sender";
 import { RequestSender } from "./request-sender";
 import * as path from 'path';
 import { glob } from 'glob';
+import { AppConfig } from './app-config';
 
 export class Application {
 	private plugins: AppPlugin[] = [];
-	private broker: Broker;
+	public broker: Broker;
 	private isControllerCreated = false;
+	private isPluginsInit = false;
 	
 	private async checkAndCreateControllers() {
 		if (this.isControllerCreated) return;
@@ -23,11 +25,22 @@ export class Application {
 			for (const key in module) {
 				const exported = module[key];
 				if (typeof exported === 'function' && Reflect.getMetadata('isController', exported)) {
-					exported.prototype.broker = this;
 					new exported();
 				}
 			}
 		}
+
+		this.isControllerCreated = true;
+	}
+
+	private async initPlugins() {
+		if (this.isPluginsInit) return;
+
+		for (const plugin of this.plugins) {
+			await plugin.init();
+		}
+
+		this.isPluginsInit = true;
 	}
 
 	async usePlugin(plugin: AppPlugin) {
@@ -51,11 +64,12 @@ export class Application {
 	}
 	
 	constructor(private config: AppConfig) {
-		this.broker = new Broker(config.broker)
+		this.broker = new Broker(config.broker ?? {})
 	}	
 
 	async start() {
 		await this.checkAndCreateControllers()
+		await this.initPlugins();
 
 		for (const plugin of this.plugins) {
 			await plugin.start();

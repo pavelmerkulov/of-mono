@@ -1,1 +1,1 @@
-interface BrokerConfig {}
+export interface BrokerConfig {}

@@ -3,6 +3,8 @@ import { Application } from '@of-mono/common/src/lib/contract-util/application';
 import { HttpEngine } from '@of-mono/common/src/lib/contract-util/app-plugins/http-engine';
 import { KafkaEventEngine } from '@of-mono/common/src/lib/contract-util/app-plugins/kafka-event-engine';
 import { BullJobEngine } from '@of-mono/common/src/lib/contract-util/app-plugins/bull-job-engine';
+import { Container as DiContainer } from 'typedi';
+import { Broker } from '@of-mono/common/src/lib/contract-util/broker';
 
 // we can configure our express app as we want
 const expressApp = express();
@@ -23,7 +25,9 @@ app.usePlugin(new HttpEngine(
         hosts: [
             { alias: 'AUTOMATIONS_SERVICE', url: 'http://localhost:3003' },
             { alias: 'CLIENTS_SERVICE', url: 'http://localhost:3004' },
-        ]        
+        ],
+        validationInputRequest: true,
+        validateOutputRequestResponse: true
     }
 ))
 
@@ -45,6 +49,9 @@ app.usePlugin(new BullJobEngine({
         port: 6379,             
     }
 }))
+
+// we want inject broker to use cases
+DiContainer.set(Broker, app.broker);
 
 
 async function start() {

@@ -1,5 +1,4 @@
-// import axios from 'axios';
-import 'reflect-metadata';
+
 import { RequestContract } from "./contracts/request-contract";
 import { EventContract } from './contracts/event-contract';
 import { JobContract } from './contracts/job-contract';
@@ -7,6 +6,7 @@ import { JobsOptions } from 'bullmq';
 import { RequestSender } from './request-sender';
 import { EventSender } from './event-sender';
 import { JobSender } from './job-sender';
+import { BrokerConfig } from "./broker-config";
 
 
 export class Broker {
