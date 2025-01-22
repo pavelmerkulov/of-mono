@@ -1,9 +1,12 @@
 {
-    "extends": "../../tsconfig.base.json",
+    "extends": "../../tsconfig.json",
     "references": [{ "path": "../common" }],
     "compilerOptions": {
         "rootDir": "src",
-        "outDir": "dist"
+        "outDir": "dist",
+        "paths": {
+            "@of-mono/common/*":  ["../common/src/*"]
+        }
     }
 }
   

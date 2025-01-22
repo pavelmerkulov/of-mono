@@ -1,8 +1,8 @@
-import { Controller } from '@of-mono/common/src/lib/contract-util/decorators/controller';
-import { logger } from '@of-mono/common/src/lib/logger';
+import { Controller } from '@of-mono/common/lib/contract-util/decorators/controller';
+import { logger } from '@of-mono/common/lib/logger';
 import { Container as DiContainer } from 'typedi';
-import { SendNotifEmailsJC, Payload as SendNotifEmailsJCPayload } from '@of-mono/common/src/contracts/contacts-service/jobs-contracts/send-notif-emails.JC';
-import { Job } from '@of-mono/common/src/lib/contract-util/decorators/job';
+import { SendNotifEmailsJC, Payload as SendNotifEmailsJCPayload } from '@of-mono/common/contracts/contacts-service/jobs-contracts/send-notif-emails.JC';
+import { Job } from '@of-mono/common/lib/contract-util/decorators/job';
 import { SendNotifyEmailsUseCase } from '../use-cases/send-notify-emails.use-case';
 
 @Controller

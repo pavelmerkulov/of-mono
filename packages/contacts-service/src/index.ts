@@ -1,12 +1,12 @@
 import express from 'express';
-import { Application } from '@of-mono/common/src/lib/contract-util/application';
-import { HttpEngine } from '@of-mono/common/src/lib/contract-util/app-plugins/http-engine';
-import { KafkaEventEngine } from '@of-mono/common/src/lib/contract-util/app-plugins/kafka-event-engine';
-import { BullJobEngine } from '@of-mono/common/src/lib/contract-util/app-plugins/bull-job-engine';
+import { Application } from '@of-mono/common/lib/contract-util/application';
+import { HttpEngine } from '@of-mono/common/lib/contract-util/app-plugins/http-engine';
+import { KafkaEventEngine } from '@of-mono/common/lib/contract-util/app-plugins/kafka-event-engine';
+import { BullJobEngine } from '@of-mono/common/lib/contract-util/app-plugins/bull-job-engine';
 import { Container as DiContainer } from 'typedi';
-import { Broker } from '@of-mono/common/src/lib/contract-util/broker';
-import { BaseError } from '@of-mono/common/src/lib/base.error';
-import { logger } from '@of-mono/common/src/lib/logger';
+import { Broker } from '@of-mono/common/lib/contract-util/broker';
+import { BaseError } from '@of-mono/common/lib/base.error';
+import { logger } from '@of-mono/common/lib/logger';
 
 // we can configure our express app as we want
 const expressApp = express();

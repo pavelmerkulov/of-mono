@@ -1,9 +1,22 @@
 {
-    "files": [],
-    "references": [
-        { "path": "packages/common" },
-        { "path": "packages/automations-service" },
-        { "path": "packages/contacts-service" }
-    ]
+    "compilerOptions": {
+      "incremental": true,
+      "target": "es2019",
+      "module": "commonjs",
+      "declaration": true,
+      "sourceMap": true,
+      "composite": true,
+      "strict": true,
+      "moduleResolution": "node",
+      "esModuleInterop": true,
+      "skipLibCheck": true,
+      "forceConsistentCasingInFileNames": true,
+      "experimentalDecorators": true,
+      "emitDecoratorMetadata": true
+    },
+    "ts-node": {
+        "transpileOnly": true,
+        "skipIgnore": true,
+        "require": ["module-alias/register", "./module-aliases.js"],
+    }
 }
-  

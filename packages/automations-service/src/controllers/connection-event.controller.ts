@@ -1,7 +1,7 @@
-import { Controller } from '@of-mono/common/src/lib/contract-util/decorators/controller';
-import { Event } from '@of-mono/common/src/lib/contract-util/decorators/event';
-import { ConnectionCreatedEC, Payload as ConnectionCreatedECPayload } from "@of-mono/common/src/contracts/automations-service/event-contracts/connection-created.EC";
-import { logger } from '@of-mono/common/src/lib/logger';
+import { Controller } from '@of-mono/common/lib/contract-util/decorators/controller';
+import { Event } from '@of-mono/common/lib/contract-util/decorators/event';
+import { ConnectionCreatedEC, Payload as ConnectionCreatedECPayload } from "@of-mono/common/contracts/automations-service/event-contracts/connection-created.EC";
+import { logger } from '@of-mono/common/lib/logger';
 
 @Controller
 export class ConnectionEventController {

@@ -1,6 +1,6 @@
-import { ConnectionCreatedEC } from "@of-mono/common/src/contracts/automations-service/event-contracts/connection-created.EC";
-import { RequestPayload, ResponsePayload } from "@of-mono/common/src/contracts/automations-service/request-contracts/create-connection.RC";
-import { Broker } from "@of-mono/common/src/lib/contract-util/broker";
+import { ConnectionCreatedEC } from "@of-mono/common/contracts/automations-service/event-contracts/connection-created.EC";
+import { RequestPayload, ResponsePayload } from "@of-mono/common/contracts/automations-service/request-contracts/create-connection.RC";
+import { Broker } from "@of-mono/common/lib/contract-util/broker";
 import { Service } from 'typedi';
 import { ConnectionsRepository } from "../repositories/connections-repository";
 import { Connection } from "../models/Connection";

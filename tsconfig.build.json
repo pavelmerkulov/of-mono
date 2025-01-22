@@ -1,0 +1,8 @@
+{
+    "files": [],
+    "references": [
+        { "path": "packages/common" },
+        { "path": "packages/automations-service" },
+        { "path": "packages/contacts-service" }
+    ]
+}

@@ -1,10 +1,10 @@
-import { Controller } from '@of-mono/common/src/lib/contract-util/decorators/controller';
-import { Event } from '@of-mono/common/src/lib/contract-util/decorators/event';
-import { ContactCreatedEC, Payload as ContactCreatedECPayload } from "@of-mono/common/src/contracts/contacts-service/event-contracts/contact-created.EC";
-import { logger } from '@of-mono/common/src/lib/logger';
+import { Controller } from '@of-mono/common/lib/contract-util/decorators/controller';
+import { Event } from '@of-mono/common/lib/contract-util/decorators/event';
+import { ContactCreatedEC, Payload as ContactCreatedECPayload } from "@of-mono/common/contracts/contacts-service/event-contracts/contact-created.EC";
+import { logger } from '@of-mono/common/lib/logger';
 import { Container as DiContainer } from 'typedi';
-import { Broker } from '@of-mono/common/src/lib/contract-util/broker';
-import { SendNotifEmailsJC } from '@of-mono/common/src/contracts/contacts-service/jobs-contracts/send-notif-emails.JC';
+import { Broker } from '@of-mono/common/lib/contract-util/broker';
+import { SendNotifEmailsJC } from '@of-mono/common/contracts/contacts-service/jobs-contracts/send-notif-emails.JC';
 
 @Controller
 export class ContactEventController {

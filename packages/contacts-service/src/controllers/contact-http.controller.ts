@@ -1,6 +1,6 @@
-import { Controller } from '@of-mono/common/src/lib/contract-util/decorators/controller';
-import { Request } from '@of-mono/common/src/lib/contract-util/decorators/request';
-import { CreateContactRC, RequestPayload as CreateRequestPayload, ResponsePayload as CreateResponsePayload  } from "@of-mono/common/src/contracts/contacts-service/request-contracts/create-contact.RC";
+import { Controller } from '@of-mono/common/lib/contract-util/decorators/controller';
+import { Request } from '@of-mono/common/lib/contract-util/decorators/request';
+import { CreateContactRC, RequestPayload as CreateRequestPayload, ResponsePayload as CreateResponsePayload  } from "@of-mono/common/contracts/contacts-service/request-contracts/create-contact.RC";
 import { Container as DiContainer } from 'typedi';
 import { CreateContactUseCase } from '../use-cases/create-contact.use-case';
 

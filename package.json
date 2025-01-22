@@ -3,18 +3,20 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "build": "npm run build --workspaces",
-    "start": "npm start --workspaces",
-    "dev": "npm run dev --workspaces"
+    "prebuild": "npm run clean",
+    "build": "tsc -b tsconfig.build.json",
+    "postbuild": "rimraf -g \"packages/**/dist/**/*.d.ts\"",
+    "clean": "rimraf -g \"packages/**/dist\" \"packages/**/*.tsbuildinfo\""
+  },
+  "_moduleAliases": {
+    "@of-mono/common": "packages/common/dist"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
   "workspaces": [
-    "packages/common",
-    "packages/automations-service",
-    "packages/contacts-service"
+    "packages/*"
   ],
   "devDependencies": {
     "@types/express": "^5.0.0",
@@ -31,7 +33,9 @@
     "glob": "^11.0.0",
     "joi": "^17.13.3",
     "kafkajs": "^2.2.4",
+    "module-alias": "^2.2.3",
     "reflect-metadata": "^0.2.2",
+    "rimraf": "^6.0.1",
     "typedi": "^0.10.0"
   }
 }

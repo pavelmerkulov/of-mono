@@ -1,10 +1,10 @@
-import { RequestPayload, ResponsePayload } from "@of-mono/common/src/contracts/contacts-service/request-contracts/create-contact.RC";
-import { Broker } from "@of-mono/common/src/lib/contract-util/broker";
+import { RequestPayload, ResponsePayload } from "@of-mono/common/contracts/contacts-service/request-contracts/create-contact.RC";
+import { Broker } from "@of-mono/common/lib/contract-util/broker";
 import { Service } from 'typedi';
 import { ContactsRepository } from "../repositories/contacts-repository";
 import { Contact } from "../models/Contact";
-import { ContactCreatedEC } from "@of-mono/common/src/contracts/contacts-service/event-contracts/contact-created.EC";
-import { logger } from '@of-mono/common/src/lib/logger';
+import { ContactCreatedEC } from "@of-mono/common/contracts/contacts-service/event-contracts/contact-created.EC";
+import { logger } from '@of-mono/common/lib/logger';
 
 @Service({ transient: true })
 export class CreateContactUseCase {
